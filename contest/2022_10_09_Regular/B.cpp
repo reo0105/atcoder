@@ -1,57 +1,42 @@
 #include <bits/stdc++.h>
 using namespace std;
+typedef pair<int, int> p;
 
 int main()
 {
-    int t, befor = 0, cnt = 0, after = 0;
-    int left = 0, right = 0;
-    bool ans = false;
-    vector<int> n(100005), k(100005);
-    vector<string> s(100005);
+    int n;
+    vector<p> x;
+    // vector<int> b(300005);
 
-    cin >> t;
-
-    for (int i = 0; i < t; i++) {
-        cin >> n.at(i) >> k.at(i);
-        cin >> s.at(i);
+    cin >> n;
+    for (int i = 1; i <= n; i++) {
+        int a;
+        cin >> a;
+        x.push_back(make_pair(a, 0));
     }
 
-    for (int i = 0; i < t; i++) {
-        left = 0; right = 0; cnt = 0;
-        for (int j = 0; j < n.at(i); j++) {
-            // if (befor == 0 && s.at(j) == '?') {
-            //     befor++;
-            // } else if (s.at(j) == '1') {
-            //     cnt++;
-            // } else if (s.at(j) == '?') {
-            //     after++;
-            // } else if (j == n.at(i) - k.at(i) - 1 || s.at(j) == '0'){
-            //     if (cnt < k.at(i) && after + cnt >= k.at(i)) {
-            //         ans = true;
-            //     }
-            //     befor = 0;
-            //     after = 0;
-            // }
-            if (s.at(i).at(j) == '1' || s.at(i).at(j) == '?') right++;
-            else {
-                left++;
-            }
-
-            if (left > right) right = left;
-
-            if (right - left == k.at(i) && ((right < n.at(i) && s.at(i).at(right) != '1') && (left >=1 && s.at(i).at(left-1) != '1'))) {
-                cnt++;
-                left++;
-            }
-        }
-
-        if (cnt == 1) {
-            cout << "Yes" << endl;
-        } else {
-            cout << "No" << endl;
-        }
-
+    for (int i = 0 ; i < n; i++) {
+        int b;
+        cin >> b;
+        x.at(i).second = b;
     }
+
+    sort(x.begin(), x.end());
+
+
+    vector<int> dp(3000005, 1<<29);
+
+    for (int i = 0; i < n; i++) {
+        auto itr = lower_bound(dp.begin(), dp.end(), x.at(i).second);
+
+        *itr = x.at(i).second;
+    }
+
+    int ans = lower_bound(dp.begin(), dp.end(), 1<<29) - dp.begin();
+
+    ans += n;
+
+    cout << ans << endl;
 
     return 0;
 }
