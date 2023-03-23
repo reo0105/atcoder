@@ -1,28 +1,11 @@
 #include <bits/stdc++.h>
 using namespace std;
-
-int lis(vector<int> tmp)
-{
-    vector<int> dp;
-    
-    for (auto ele : tmp) {
-        auto it = lower_bound(dp.begin(), dp.end(), ele);
-
-        if (it == dp.end()) {
-            dp.push_back(ele);
-        } else {
-            *it = ele;
-        }
-    }
-
-    return (int)dp.size();
-}
-
+#define INF 1<<29
 
 int main()
 {
     int n;
-    vector<int> p(200005), q(200005, -1);
+    vector<int> p(200005), q(200005);
 
     cin >> n;
     for (int i = 0; i < n; i++) cin >> p.at(i);
@@ -40,12 +23,20 @@ int main()
     }
 
     sort(pa.begin(), pa.end());
-
     vector<int> tmp;
 
-    for (int i = 0; i < (int)pa.size(); i++) {
-        tmp.push_back(pa.at(i).second * -1);
+    for (auto x : pa) {
+        tmp.push_back(-1*x.second);
     }
 
-    cout << lis(tmp) << endl;
+    vector<int> dp(200005, INF);
+    for (int x : tmp) {
+        auto itr = lower_bound(dp.begin(), dp.end(), x);
+
+        *itr = x;
+    }
+
+    cout << lower_bound(dp.begin(), dp.end(), INF) - dp.begin() << endl;
+    
+    return 0;
 }
