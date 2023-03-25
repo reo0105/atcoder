@@ -3,4 +3,6 @@
 2022-1-23 beginner D
 2022-01-30 beginner E
 2022-02-05 beginner E
-
+2022-02-13 regular B
+2022-02-13 regular C
+2022-02-19 beginner E Euler Tour
