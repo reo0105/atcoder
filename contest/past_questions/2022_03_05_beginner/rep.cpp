@@ -3,34 +3,46 @@ using namespace std;
 typedef long long ll;
 #define MOD 998244353
 
+ll modpow(ll a, ll y)
+{
+    ll ret = 1;
+    while (y > 0) {
+        if (y & 1) ret = ret * a % MOD;
+        a = a * a % MOD;
+        y >>= 1;
+    }
+
+    return ret;
+}
+
 int main()
 {
-    string s;
-    int q;
+    int t;
+    cin >> t;
+    for (int i = 0; i < t; i++) {
+        int n;
+        string s;
+        cin >> n >> s;
 
-    cin >> s >> q;
-    int n = (int)s.size();
+        int loop = (n+1) / 2;
+        string invs(s.rbegin(), s.rend());
+        string x = s.substr(0, loop) + invs.substr(loop);
 
-    for (int i = 0; i < q; i++) {
-        ll t, k;
-        cin >> t >> k;
+        ll ans = 0;
+        if (x <= s) ans++;
 
-        ll s0;
-        if (t > 59) {
-            s0 = 0;
-        } else {
-            s0 = (k-1) / (1L<<t);
-            k -= (1L<<t) * s0;
+        ll alpha = 1;
+        ll inv_alpha = modpow(26, MOD-2);
+        
+        for (int i = 1; i < loop; i++) { alpha *= 26; alpha %= MOD; } 
+        for (int i = 0; i < loop; i++) {
+            ans += (s.at(i) - 'A') * alpha;
+            ans %= MOD;
+            alpha *= inv_alpha;
+            alpha %= MOD;
         }
 
-        // t %= 3; k %= 3;
-        // cout << s0 << " " << k << endl;
-        ll cnt = s.at(s0) - 'A';
-        cnt = cnt + t % 3;
-        cnt = cnt + k % 3;
-        if (cnt == 0) cout << 'A' << endl;
-        else if (cnt == 1) cout << 'B' << endl;
-        else cout << 'C' << endl;
+        cout << ans << endl;
     }
 
     return 0;
