@@ -1,75 +1,66 @@
-#include <bits/stdc++.h>
-using namespace std;
-typedef tuple<int, int, int> tup;
+// #include <bits/stdc++.h>
+// using namespace std;
+// typedef long long ll;
 
 // int main()
 // {
 //     int n;
 //     vector<int> a(200005), b(200005);
-//     vector<bool> ans(200005);
-
+    
 //     cin >> n;
-//     for (int i = 0; i < n; i++) cin >> a.at(i);
-//     for (int i = 0; i < n; i++) cin >> b.at(i);
+//     for (int i = 1; i <= n; i++) cin >> a.at(i);
+//     for (int i = 1; i <= n; i++) cin >> b.at(i);
+
+
+//     vector<int> cnta(200005, 0), cntb(200005, 0);
+//     vector<bool> eq(200005, false);
+//     set<int> sa, sb;
+
+//     for (int i = 1; i <= n; i++) {
+//         if (sa.count(a.at(i))) {
+//             cnta.at(i) = cnta.at(i-1);
+//         } else {
+//             sa.insert(a.at(i));
+//             cnta.at(i) = cnta.at(i-1) + 1;
+//         }
+
+//         if (sb.count(b.at(i))) {
+//             cntb.at(i) = cntb.at(i-1);
+//         } else {
+//             sb.insert(b.at(i));
+//             cntb.at(i) = cntb.at(i-1) + 1;
+//         }
+//     }
+
+//     // sa.clear(); sb.clear();
+
+//     int cnt = 0;
+//     int ia = 1, ib = 1;
+//     set<int> sa1, sb1;
+//     while (1) {
+//         while (ia <= n && sa1.count(a.at(ia))) ia++;
+//         while (ib <= n && sb1.count(b.at(ib))) ib++;
+//         if (ia == n+1 || ib == n+1) break;
+//         cnt++;
+//         sa1.insert(a.at(ia));
+//         sb1.insert(b.at(ib));
+//         // cout << "cnt " << cnt << " " << a.at(ia) << " " << b.at(ib) << endl; 
+//         eq.at(cnt) = (sa1 == sb1); //これが線形時間かかるからTLE
+//     }
 
 //     int q;
-//     vector<tup> p;
-
 //     cin >> q;
+
 //     for (int i = 0; i < q; i++) {
 //         int x, y;
-//         tup tmp;
 //         cin >> x >> y;
-//         tmp = make_tuple(x, y, i);
-//         p.push_back(tmp);
-//     }
-//     // for (int i = 0; i < q; i++) {
-//     //     cout << get<0>(p.at(i)) <<" ";
-//     //     // get<1>(p.at(i)) = y;
-//     //     // get<2>(p.at(i)) = i;
-//     // }
-
-//     sort(p.begin(), p.end());
-
-
-//     int nx = 0, ny = 0, pre_x = 0;
-//     unordered_set<int> sx, sy;
-
-//     for (int i = 0; i < q; i++) {
-//         int x, y, ind;
-//         x = get<0>(p.at(i));
-//         y = get<1>(p.at(i));
-//         if (x > nx) {
-//             for (int j = nx; j < x; j++) sx.insert(a.at(j));
-//             nx = x;
-//         }
-
-//         if (pre_x != x) {
-//             sy.clear();
-//             ny = 0;
-//         }
-
-//         if (y > ny) {
-//             for (int j = ny; j < y; j++) sy.insert(b.at(j));
-//             ny = y;
-//         }
-
-//         // cout << sx.size() << " " << sy.size() << endl;
-
-//         ind = get<2>(p.at(i));
-//         pre_x = x;
-//         if (sx == sy) ans.at(ind) = true;
-//         else ans.at(ind) = false;
-//     }
-
-//     for (int i = 0; i < q; i++) {
-//         if (ans.at(i)) cout << "Yes" << endl;
+//         if (cnta.at(x) != cntb.at(y)) cout << "No" << endl;
+//         else if (eq.at(cnta.at(x))) cout << "Yes" << endl;
 //         else cout << "No" << endl;
 //     }
 
 //     return 0;
 // }
-
  
 int main() {
     int n, q;
