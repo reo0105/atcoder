@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
+<<<<<<< HEAD
 
 int f(int k)
 {
@@ -12,10 +13,13 @@ int f(int k)
 
     return cnt+1;
 }
+=======
+>>>>>>> efdf3965130a0de7b66a14ab5434de7f81498d8a
 
 int main()
 {
     int n, p;
+<<<<<<< HEAD
 
     cin >> n >> p;
 
@@ -60,4 +64,11 @@ int main()
     cout << ans << endl;
 
     return 0;
+=======
+    cin >> n >> p;
+
+    vector<vector<ll>> dp(3005, vector<ll>(3005, 0));
+
+    
+>>>>>>> efdf3965130a0de7b66a14ab5434de7f81498d8a
 }

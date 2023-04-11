@@ -3,6 +3,10 @@ using namespace std;
 typedef pair<int, int> p;
 typedef long long ll;
 
+/*
+何個シャッフルするのが最適かいまいちわからない
+*/
+
 int main()
 {
     int n;
@@ -26,35 +30,55 @@ int main()
     int cnt = 0;
     for (p x : as) {
         if (cnt <= mid) {
-            b.at(x.second) = -1;
-        } else {
             b.at(x.second) = 1;
+        } else {
+            b.at(x.second) = -1;
         }
         cnt++;
     }
 
+    for (int i = 0; i < n-1; i++) {
+        b.at(i+1) += b.at(i);
+    }
+
+    // for (int i = 0; i < n; i++) {
+    //     cout << b.at(i) << " ";
+    // }
+    // cout << endl;
+
+    int maxi = 0, index = 0;
     cnt = 0;
     for (int i = 0; i < n; i++) {
-        b.at(i+1) += b.at(i);
-        // cout << b.at(i) << " ";
+        if (b.at(i) == 1) {
+            if (maxi < cnt) {
+                maxi = cnt;
+                index = i;
+            }
+            cnt = 0;
+        } else {
+            cnt++;
+        }
     }
+
+    maxi = max(cnt, maxi);
     
     // int maxi = 0;
     // for (int i = 0; i < n; i++) {
     //     maxi = min(maxi, b.at(i));
     // }
 
-    int mini = 1e9;
-    vector<int> c(n+1);
-    for (int i = 0; i < n; i++) {
-        c.at(i+1) = c.at(i) + b.at(i+1);
-        mini = min(mini, c.at(i+1));
-    }
+    // vector<int> c(n+1);
+    // for (int i = 0; i < n; i++) {
+    //     c.at(i+1) = c.at(i) + b.at(i+1);
+    //     mini = min(mini, c.at(i+1));
+    // }
 
     ll sum = 0;
     for (int i = 0; i < mid+1; i++) sum += as.at(i).first;
 
-    cout << mini << " " << sum << endl; 
+    // cout << maxi << " " << index << endl;
+    maxi += index - maxi;
+    cout << maxi % n << " " << sum << endl; 
 
     return 0;
 }

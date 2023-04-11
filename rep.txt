@@ -13,3 +13,5 @@
 2022-03-20 beginner E
 2022-03-26 beginner E
 2022-03-26 beginner F
+2022-04-09 regular A
+2022-04-10 beginner E
