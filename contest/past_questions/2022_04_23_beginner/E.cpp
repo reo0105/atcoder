@@ -1,47 +1,63 @@
 #include <bits/stdc++.h>
 using namespace std;
+typedef long long ll;
+
+int f(int k)
+{
+    int cnt = 0;
+    while (k > 0) {
+        k /= 10;
+        cnt++;
+    }
+
+    return cnt+1;
+}
 
 int main()
 {
-    int a, b, c, d, e, f, x;
-    cin >> a >> b >> c >> d >> e >> f >> x;
+    int n, p;
 
-    int ao = 0, ta = 0;
-    int run_ao = a, run_ta = d;
-    int res_ao = c, res_ta = f;
+    cin >> n >> p;
 
-    while (x > 0) {
-        if (run_ao > 0) {
-            run_ao--;
-            ao += b;
-        } else {
-            if (res_ao == 1) {
-                run_ao = a;
-                res_ao = c;
-            } else {
-                res_ao--;
-            }
-        }
+    vector<vector<ll>> dp(3005, vector<ll>(3005, 0));
+    vector<vector<ll>> sum(3005, vector<ll>(3005, 0));
 
-        if (run_ta > 0) {
-            run_ta--;
-            ta += e;
-        } else {
-            if (res_ta == 1) {
-                run_ta = d;
-                res_ta = f;
-            } else {
-                res_ta--;
-            }
-        }
-        x--;
+    for (int i = 1; i <= n; i++) {
+        dp.at(i).at(f(i)) = 26;
     }
 
-    // cout << ao << " " << ta << endl;
+    vector<ll> ten = {0, 1, 10, 100, 1000, 3000};
 
-    if (ao < ta) cout << "Aoki" << endl;
-    else if (ao > ta) cout <<"Takahashi" << endl;
-    else cout << "Draw" << endl;
+    for (int i = 1; i <= n; i++) { //i文字目まで決めて
+        for (int j = 1; j <= n; j++) { //圧縮した文字列がj文字
+            // for (int w = 1; w <= n; w++) { //次のブロックの長さ
+            //     int nj = j-f(w);
+            //     if (nj <= 0) continue;
+            //     if (i > w) dp.at(i).at(j) += dp.at(i-w).at(nj)*25;
+            //     dp.at(i).at(j) %= p;
+            // }
+
+            for (int k = 1; k <= 4; k++) {
+                int nj = j-k-1;
+                if (nj <= 0) continue;
+                int lb = ten.at(k), ub = ten.at(k+1);
+                // if (i <= lb || i <= ub) continue;
+                ub = min(ub, i);
+                if (lb >= ub) continue;
+                dp.at(i).at(j) += ((sum.at(i-lb).at(nj) - sum.at(i-ub).at(nj) + p) % p)*25;
+                dp.at(i).at(j) %= p;
+            }
+            sum.at(i).at(j) = sum.at(i-1).at(j) + dp.at(i).at(j);
+            sum.at(i).at(j) %= p;
+        }
+    }
+
+    ll ans = 0;
+    for (int i = 1; i < n; i++) {
+        ans += dp.at(n).at(i);
+        ans %= p;
+    }
+    cout << ans << endl;
 
     return 0;
 }
