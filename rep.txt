@@ -18,3 +18,5 @@
 2022-05-08 beginner E
 2022-05-14 beginner E
 2022-05-15 regular A
+2022-05-21 beginner D
+2022-05-21 beginner E
