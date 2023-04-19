@@ -1,61 +1,38 @@
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
-typedef pair<ll, int> p;
-#define INF 1L<<58
-
-struct edge {
-    // int from;
-    int to;
-    int cost;
-    int id;
-    // bool operator< (edge const& o) {
-        // return cost < o.cost;
-    // }
-};
 
 int main()
 {
-    int n, m;
-    vector<vector<edge>> G(200005);
+    int n;
+    vector<int> a(200005);
+    vector<int> cnt;
 
-    cin >> n >> m;
-    for (int i = 0; i < m; i++) {
-        int a, b, c;
-        edge tmp;
-        cin >> a >> b >> c;
-        tmp.to = b; tmp.cost = c; tmp.id = i+1;
-        G.at(a).push_back(tmp);
-        tmp.to = a;
-        G.at(b).push_back(tmp);
+    cin >> n;
+    for (int i = 1; i <= n; i++) {
+        int x;
+        cin >> x;
+        a.at(x)++;
     }
 
-    vector<ll> dist(200005, INF);
-    priority_queue<p, vector<p>, greater<p>> que;
-    vector<int> ans(200005);
+    for (int i = 1; i <= 200000; i++) {
+        if (a.at(i) != 0) cnt.push_back(a.at(i));
+    }
 
-    dist.at(1) = 0;
-    que.push(make_pair(0, 1));
+    vector<vector<ll>> dp(200005, vector<ll>(5, 0));
 
-    while (que.size()) {
-        p top = que.top();
-        que.pop();
-        ll c = top.first;
-        int u = top.second;
+    dp.at(0).at(0) = 1;
 
-        if (dist.at(u) < c) continue;
+    for (int i = 0; i < (int)cnt.size(); i++) {
+        for (int j = 0; j <= 3; j++) {
+            if (i < j) break;
 
-        for (auto v : G.at(u)) {
-            ll nc = c + v.cost;
-            if (dist.at(v.to) <= nc) continue;
-            dist.at(v.to) = nc;
-            que.push(make_pair(nc, v.to));
-            ans.at(v.to) = v.id;
+            dp.at(i+1).at(j) += dp.at(i).at(j);
+            dp.at(i+1).at(j+1) += dp.at(i).at(j) * cnt.at(i);
         }
     }
 
-    for (int i = 2; i <= n; i++) cout << ans.at(i) << " ";
-    cout << endl;
+    cout << dp.at((int)cnt.size()).at(3) << endl;
 
     return 0;
 }
