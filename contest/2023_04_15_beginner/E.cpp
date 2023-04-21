@@ -22,75 +22,36 @@ int main()
     int n, a, b, p, q;
     cin >> n >> a >> b >> p >> q;
 
-    vector<vector<ll>> dp(105, vector<ll>(105, 0));
+    vector<vector<vector<ll>>> dp(105, vector<vector<ll>>(105, vector<ll>(2, 0)));
+    // vector<vector<ll>> dp(105, vector<ll>(105, 0));
 
-    dp.at(a).at(b) = 1;
+    dp.at(a).at(b).at(0) = 1;
 
-    for (int l = 0; l < n-a; l++) {
+    ll pinv = modinv(p);
+    ll qinv = modinv(q);
 
-        if (b+l < n) {
-            for (int i = 1; i < n; i++) {
-                dp.at(i).at(n) *= p;
-                dp.at(i).at(n) %= MOD; 
+    for (int i = a; i < n; i++) {
+        for (int j = b; j < n; j++) {
+
+            for (int ta = 1; ta <= p; ta++) {
+                dp.at(min(i+ta, n)).at(j).at(1) += dp.at(i).at(j).at(0) * pinv;
+                dp.at(min(i+ta, n)).at(j).at(1) %= MOD;
             }
-        }
-        for (int ao = b+l; ao < n; ao++) {
-            // dp.at(n).at(ao) %= MOD;
-            for (int ta = n-1; ta >= 1; ta--) {
-                for (int si = 1; si <= p; si++) {
-                    // if (ta+si <= n) {
-                        dp.at(min(ta+si, n)).at(ao) += dp.at(ta).at(ao);
-                        dp.at(min(ta+si, n)).at(ao) %= MOD;
-                    // }
-                }
-            }
-        }
 
-        if (l == n-a-1) break;
-
-        if (a+l+1 < n) {
-            for (int i = 1; i < n; i++) {
-                dp.at(n).at(i) *= q;
-                dp.at(n).at(i) %= MOD;
-            }
-        }
-        for (int ta = a+l+1; ta < n; ta++) {
-            // dp.at(ta).at(n) %= MOD;
-            for (int ao = n-1; ao >= 1; ao--) {
-                for (int si = 1; si <= q; si++) {
-                    // if (ao+si <= n) {
-                        dp.at(ta).at(min(ao+si, n)) += dp.at(ta).at(ao);
-                        dp.at(ta).at(min(ao+si, n)) %= MOD;
-                    // }
-                }
+            for (int ao = 1; ao <= q; ao++) {
+                dp.at(i).at(min(j+ao, n)).at(0) += dp.at(i).at(j).at(1) * qinv;
+                dp.at(i).at(min(j+ao, n)).at(0) %= MOD;
             }
         }
     }
 
-    // for (int i = 1; i <= n; i++) {
-    //     for (int j = 1; j <= n; j++) {
-    //         cout << dp.at(i).at(j) << " ";
-    //     }
-    //     cout << endl;
-    // }
-
-    ll y = 0, x = 0;
-    for (int i = 1; i < n; i++) {
-        x += dp.at(n).at(i);
-        x += dp.at(i).at(n);
-        x %= MOD;
+    ll ans = 0;
+    for (int i = b; i < n; i++) {
+        ans += dp.at(n).at(i).at(1);
+        ans %= MOD;
     }
 
-    for (int ao = 1; ao < n; ao++) {
-        y += dp.at(n).at(ao);
-        y %= MOD;
-    }
-    cout << x << " " << y << endl;
-
-    ll re = modinv(x);
-
-    cout << re*y % MOD << endl;
-
+    cout << ans << endl;
 
     return 0;
 }

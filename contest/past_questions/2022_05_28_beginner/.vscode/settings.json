@@ -3,6 +3,7 @@
         "numeric": "cpp",
         "array": "cpp",
         "string_view": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "tuple": "cpp"
     }
 }
