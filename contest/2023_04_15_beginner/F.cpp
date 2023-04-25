@@ -2,7 +2,7 @@
 using namespace std;
 typedef long long ll;
 typedef pair<int, int> p;
-typedef pair<ll, int> pl;
+typedef pair<ll, ll> pl;
 
 int main()
 {
@@ -23,8 +23,18 @@ int main()
     vector<pl> sumr, sumc; 
 
     ll t = 0;
-    for (p x : mpr) sumr.push_back(make_pair(x.second, x.first));
-    for (p x : mpc) sumc.push_back(make_pair(x.second, x.first));
+    pl tmp;
+    for (pl x : mpr) {
+        tmp.first = x.second;
+        tmp.second = x.first;
+        sumr.push_back(tmp);
+    }
+    for (pl x : mpc) {
+        tmp.first = x.second;
+        tmp.second = x.first;
+        sumc.push_back(tmp);
+    }
+
     
     sort(sumr.rbegin(), sumr.rend());
     sort(sumc.rbegin(), sumc.rend());
