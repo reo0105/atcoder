@@ -40,9 +40,9 @@ int main()
     if (n != 1) {
         cout << 0 << endl;
         return 0;
-    } else {
-
     }
+
+    
 
     
 
