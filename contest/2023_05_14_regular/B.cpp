@@ -3,17 +3,6 @@ using namespace std;
 typedef long long ll;
 #define MOD 998244353
 
-vector<ll> divisor(ll n) {
-    vector<ll> ret;
-    for (ll i = 1; i * i <= n; i++) {
-        if (n % i == 0) {
-            ret.push_back(i);
-            if (i * i != n) ret.push_back(n / i);
-        }
-    }
-    sort(ret.begin(), ret.end()); // 昇順に並べる
-    return ret;
-}
 
 int main()
 {
@@ -25,24 +14,25 @@ int main()
         int n;
         cin >> n;
 
-        // vector<ll> div = divisor(n);
-        // cout << div.size() << endl;
+        // x <= y <= z
+        for (ll y = 1; y * y <= n; y++) {
+            ll x = y; //xとして取れる最大値
+            ll z = n/y; //zとして取れる最大値
 
-        for (int x = 1; x * x <= n; x++) {
-            int lim = n / x;
-            for (int y = x; y * y <= lim; y++) {
-                if (x*y > n) break;
-                int z = n/y;
-                if (z <= lim) {
-                    if (x == y || y == z || z == x) ans += (z-1)*3+1;
-                    else if (x == y && y == z) ans += z;
-                    else ans += z*6;
-                    ans %= MOD;
-                }
-            }
+            // cout << x << " " << y << " " << z << endl;
+
+            // x < y < z
+            ans = (ans + (x-1)*(z-y)*6) % MOD;
+            // x = y < z
+            ans = (ans + (z-y)*3) % MOD;
+            // x < y = z
+            ans = (ans + (x-1)*3) % MOD;
+            // x = y = z
+            ans = (ans + 1) % MOD;
         }
 
         cout << ans << endl;
+        ans = 0;
     }
 
 
