@@ -1,34 +1,65 @@
 #include <bits/stdc++.h>
 using namespace std;
+typedef long long ll;
+
+struct edge {
+    int to;
+    int cost;
+};
+
+vector<edge> G(200005);
+vector<int> seen(200005, 0);
+stack<int> stk;
+int loop = false;
+
+int dfs(int from, int cnt, int &end)
+{
+    int c = 0;
+    seen.at(from) = cnt;
+    stk.push(from);
+
+    int n = G.at(from).to;
+    if (seen.at(n) != 0 && seen.at(n) != cnt) return 0;
+    if (seen.at(n) == 0) {
+        c = dfs(n, cnt, end);
+        int b = stk.top();
+        stk.pop();
+        if (loop) {
+            if (end == b) loop = false;
+            return min(c, G.at(from).cost);
+        } else return c;
+    } else if (seen.at(n) == cnt) {
+        end = n;
+        loop = true;
+        stk.pop();
+        return G.at(from).cost;
+    }
+}
 
 int main()
 {
-    int h1, h2, h3, w1, w2, w3;
-    int ans = 0;
+    int n;
+    cin >> n;
+    for (int i = 1; i <= n; i++) {
+        int x;
+        cin >> x;
+        G.at(i).to = x;
+    }
+    for (int i = 1; i <= n; i++) {
+        int c;
+        cin >> c;
+        G.at(i).cost = c;
+    }
 
-    cin >> h1 >> h2 >> h3 >> w1 >> w2 >> w3;
-
-    for (int a = 1; a <= 28; a++) {
-        for (int b = 1; b <= 28; b++) {
-            if (a + b >= h1) break;
-            
-            for (int c = 1; c <= 28; c++) {
-                for (int d = 1; d <= 28; d++) {
-                    if (c + d >= h2) break;
-
-                    int e = h1-a-b;
-                    int f = h2-c-d;
-                    int g = w1-a-c;
-                    int h = w2-b-d;
-                    int i = h3-g-h;
-
-                    if (g > 0 && h > 0 && i > 0 && e+f+i == w3 && g+h+i == h3) ans++;
-                }
-            }
+    ll ans = 0, t = 0;
+    int cnt = 1, end = -1;
+    for (int i = 1; i <= n; i++) {
+        if (seen.at(i) == 0) {
+            ans += dfs(i, cnt, end);
+            cnt++;
+            end = -1;
         }
     }
 
     cout << ans << endl;
-
-    return 0; 
 }
