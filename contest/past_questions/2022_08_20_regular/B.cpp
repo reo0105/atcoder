@@ -41,7 +41,7 @@ int main()
             ans += 1<<i;
             m -= t;
             //cout << i << " " << m << " " << t << endl;
-            if (t != 0) {
+            if (t != 0) { //大きい方からk個で確定
                 for (int j = n-1; j > n-1-k; j--) {
                     if (((a.at(j)>>i) & 1) == 0) {
                         a.at(j) = (1<<i);
@@ -49,7 +49,7 @@ int main()
                     }
                 } 
                 flag = 0;
-            } else {
+            } else { //今見てるビットについて大きい方からk個全部1なのでまたソートが必要。
                 for (int j = n-1; j >= 0; j--) {
                     if (((a.at(j)>>i) & 1) == 0) {
                         a.at(j) = 0;
