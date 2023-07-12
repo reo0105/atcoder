@@ -1,58 +1,67 @@
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
+#define MOD 998244353
+
+ll modpow(ll a, ll y)
+{
+    ll ret = 1;
+    while (y > 0) {
+        if (y & 1) ret = ret * a % MOD;
+        a = a * a % MOD;
+        y >>= 1;
+    }
+
+    return ret;
+}
+
+vector<bool> seen(200005, false);
+vector<vector<int>> p(200005);
+
+void dfs(int from)
+{
+    seen.at(from) = true;
+    
+    for (int u : p.at(from)) {
+        if (seen.at(u)) continue;
+
+        dfs(u);
+    }
+
+    return;
+}
+
 
 int main()
 {
-    int t;
+    int n, m;
 
-    cin >> t;
-    
-    for (int i = 0; i < t; i++) {
-        int a, b;
-        cin >> a >> b;
-
-        if (a >= b) {
-            cout << a- b << endl;
-            continue;
-        }
-        if (b % a == 0) {
-            cout << 0 << endl;
-            continue;
-        }
-
-        ll ans = a - b%a;
-        int div = b / a;
-        // cout << "ans " <<
-
-        if (a < 1e6) {
-            for (ll x = 0; x < a; x++) {
-                if (b % (a+x) == 0) ans = min(ans, x);
-                else ans = min(ans, x + (a+x) - b%(a+x));
-            }
-        } else {
-            for (int i = 1; i <= b / a; i++) {
-                ll x = ceil((double)(b - a*i) / i);
-                ll y = (a + x) * i - b;
-                ans = min(ans, x+y);
-                // cout << x << " " << y << endl;
-            }
-
-            // for (int z = 1; z < 1e3; z++) {
-            //     ll m = b - a * z;
-            //     if (m > 0) {
-            //         ll x = m / z;
-            //         if (x * z < m) x++;
-            //         ll y = x * z - m;
-            //         ans = min(ans, x+y);
-            //     } else {
-            //         ans = min(ans, -m);
-            //     }
-            // }   
-        }
-
-        cout << ans << endl;
+    cin >> n >> m;
+    for (int i = 1; i <= n; i++) {
+        int a;
+        cin >> a;
+        p.at(a).push_back(i);
+        p.at(i).push_back(a);
     }
+
+
+    int cnt = 0;
+    for (int i = 1; i<= n; i++) {
+        if (!seen.at(i)) {
+            dfs(i);
+            cnt++;
+        }
+    }
+
+    ll ans = modpow(m, n);
+    ans -= modpow(m, cnt);
+    ans += MOD;
+    ans %= MOD;
+    ans *= modpow(2, MOD-2);
+    ans %= MOD;
+
+    // cout << cnt << endl;
+    cout << ans << endl;
 
     return 0;
 }
