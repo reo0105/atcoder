@@ -1,72 +1,101 @@
 #include <bits/stdc++.h>
 using namespace std;
+
 typedef long long ll;
 
-/*
-i回目にkを食べたときの最大値？
-*/
+struct edge {
+    int u;
+    int v;
+    int cost;
+
+    bool operator<(const edge &e) {
+        return cost < e.cost;
+    }
+};
 
 
-ll modpow(ll a, ll n, ll mod)
-{
-    ll res = 1;
-    while (n > 0) {
-        if (n & 1) res = res * a % mod;
-        a = a * a % mod;
-        n >>= 1;
+struct UnionFind {
+    vector<int> par;
+
+    UnionFind(int n) {
+        par.assign(n, -1);
     }
 
-    return res;
+    int root(int x) {
+        return par.at(x) < 0 ? x : par.at(x) = root(par.at(x));
+    }
+
+    void unite(int x, int y) {
+        x = root(x);
+        y = root(y);
+        if (x == y) return;
+        if (par.at(x) > par.at(y)) swap(x, y);
+        par.at(x) += par.at(y);
+        par.at(y) = x;
+    }
+
+    bool equal(int x, int y) {
+        return root(x) == root(y);
+    }
+};
+
+
+ll modpow(ll a, ll y, int m)
+{
+    ll ret = 1;
+    
+    while (y > 0) {
+        if (y & 1) ret = ret * a % m;
+        a = a * a % m;
+        y >>= 1;
+    }
+
+    return ret;
 }
 
-int main()
-{  
-    int n, m;
-    vector<int> a(502);
-    // vector<vector<vector<ll>>> dp(502, vector<vector<ll>>(502, vector<ll>(502, -1)));
-    vector<vector<ll>> dp(502, vector<ll>(502, -1));
-    vector<vector<set<int>>> eat(502, vector<set<int>>(502));
 
+ll maximun_spanning_tree(int n, vector<edge> &G)
+{
+    UnionFind uf(n+1);
+    ll ret = 0;
+
+    sort(G.rbegin(), G.rend());
+
+    for (edge e : G) {
+        int u = e.u;
+        int v = e.v;
+        if (uf.equal(u, v)) continue;
+
+        uf.unite(u, v);
+        ret += e.cost;
+    }
+
+    return ret;
+}
+
+
+
+int main()
+{
+    int n, m;
     cin >> n >> m;
 
-    for (int i = 0; i < n; i++) cin >> a.at(i);
+    vector<int> a(n);
+    for (int i = 0; i < n; i++) cin >> a[i];
 
-    dp.at(0).at(0) = 0;
+    vector<edge> G;
 
-    // for (int i = 0; i < n-1; i++) { // i回目
-    //     for (int j = 0; j < n; j++) { // x;
-    //         for (int k = 0; k < n; k++) {// y;
-    //             if (j == k) break;
-    //             if (dp.at(i).at(j).at(k) != -1) continue;
-    //             dp.at(i+1).at(j).at(k) = max(dp.at(i+1).at(j).at(k), dp.at(i).at(pre_j).at(pre_k) + modpow(a.at(j), a.at(i), m) + modpow(a.at(i), a.at(j), m));
-    //             dp.at(i+1).at(k).at(j) = max(dp.at(i+1).at(k).at(j), dp.at(i).at(pre_k).at(pre_j) + modpow(a.at(j), a.at(i), m) + modpow(a.at(i), a.at(j), m));
-    //             pre_j = j; pre_k = k;
-    //         }
-    //     }
-    // }
-
-
-    int pre_j = 0, pre_k = 0;
-    for (int i = 0; i < n; i++) { // 今回x
-        for (int j = 0; j < n; j++) { // 今回y;
-            for (int k = 0; k < n; k++) {// 前回食べた;
-                if (i == j) break;
-                if (eat.at(i).at(j).count(j) || eat.at(i).at(k).count(k)) continue;
-                dp.at(i).at(j) = max(dp.at(i).at(j), dp.at(i).at(k) + modpow(a.at(j), a.at(k), m) + modpow(a.at(k), a.at(j), m));
-                // dp.at(i+1).at(j) = max(dp.at(i+1).at(j), dp.at(i).at(pre_j) + modpow(a.at(j), a.at(i), m) + modpow(a.at(i), a.at(j), m));
-                eat.at(i).at(j).insert(k);
-            }
+    for (int i = 0; i < n; i++) {
+        for (int j = i+1; j < n; j++) {
+            struct edge tmp;
+            int score = (modpow(a[i], a[j], m) + modpow(a[j], a[i], m)) % m;
+            tmp.u = i; tmp.v = j;
+            tmp.cost = score;
+            G.push_back(tmp);
         }
     }
 
-    ll ans = -1;
-    for (int j = 0; j < n; j++) {
-        for (int k = 0; k < n; k++) {
-            ans = max(ans, dp.at(j).at(k));
-        }
-    }
-
-    cout << ans << endl;
+    cout << maximun_spanning_tree(n, G) << endl;
 
     return 0;
 }
