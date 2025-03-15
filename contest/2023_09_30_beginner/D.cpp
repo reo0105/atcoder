@@ -3,47 +3,79 @@ using namespace std;
 
 int main()
 {
-    vector<vector<string>> p(3, vector<string>(4));
+    int n = 3, m = 4;
+    vector p(n, vector<string>(m));
 
-    int i0, j0;
-    int i1, j2;
-    int i2, j2;
-    for (int i = 0; i < 3; i) {
-        for (int j = 0; j < 4; j++) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
             cin >> p[i][j];
         }
-
-        for (int j = 0; j < 4; j++) {
-            for (int k = 0; k < 4; k++) {
-                if (p[i][k][j]) {
-                    if (i == 0) {i0 = k; j0 = j; goto out;}
-                    if (i == 1) {i1 = k; j1 = j; goto out;}
-                    if (i == 2) {i2 = k; j2 = j; goto out;}
-                }
-            }
-        }
-out:
     }
 
-    vector<vector<int>> done(4, vector<int>(4, 0));
+    vector<vector<vector<string>>> s(3);
 
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            for (int r = 0; r < 64; r++) {
-                int r1 = r & 3;
-                int r2 = (r & 12) >> 2;
-                int r3 = (r & 48) >> 4;
+    for (int pi = 0; pi < n; pi++) {
+        for (int r = 0; r < 4; r++) {
+            for (int di = -m; di < m; di++) {
+                for (int dj = -m; dj < m; dj++) {
+                    vector np(m, string(m, '.'));
+                    bool ok = true;
 
-                if (r1 == 0) {
-                    for (int l0 = 0; l0 < 4; l0++) {
-                        for (int l1 = 0; l1 < 4; l1++) {
-                            done[l0][l1]
+                    for (int i = 0; i < m; i++) {
+                        for (int j = 0; j < m; j++) {
+                            if (p[pi][i][j] == '.') continue;
+                            int ni = i + di;
+                            int nj = j + dj;
+                            if (ni < 0 || nj < 0 || ni >= m || nj >= m) {
+                                ok = false;
+                                continue;
+                            }
+                            np[ni][nj] = '#';
                         }
+                    }
+                    if (!ok) continue;
+                    s[pi].push_back(np);
+                }
+            }
+
+            {
+                auto pre = p[pi];
+                for (int i = 0; i < m; i++) {
+                    for (int j = 0; j < m; j++) {
+                        p[pi][i][j] = pre[m-1-j][i];
                     }
                 }
             }
         }
     }
+
+    for (auto p0 : s[0]) {
+        for (auto p1 : s[1]) {
+            for (auto p2 : s[2]) {
+                vector<vector<int>> cnt(m, vector<int>(m, 0));
+
+                auto put = [&](vector<string> p) {
+                    for (int i = 0; i < m; i++) {
+                        for (int j = 0; j < m; j++) {
+                            if (p[i][j] == '#') cnt[i][j]++;
+                        }
+                    }
+                };
+                put(p0);
+                put(p1);
+                put(p2);
+                // cout << s[0].size() << " " << s[1].size() << " " << s[2].size() << endl;
+
+                if (cnt == vector(m, vector<int>(m, 1))) {
+                    cout << "Yes" << endl;
+                    return 0;
+                }
+            }
+        }
+    }
+
+    cout << "No" << endl;
+
 
     return 0;
 }

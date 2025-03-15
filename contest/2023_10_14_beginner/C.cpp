@@ -54,8 +54,7 @@ int main()
     }
 
     cout << ans.size() << endl;
-    for (int i = 0; i < (int)ans.size(); i++) cout << ans[i] << " ";
-    cout << endl;
+    for (int i = 0; i < (int)ans.size(); i++) cout << ans[i] << endl;
 
     return 0;
 }

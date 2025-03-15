@@ -1,48 +1,64 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-typedef pair<int, int> pii;
+typedef long long ll;
+typedef pair<ll, int> pli;
 
-int main()
+#define INF 1e18
+
+vector<ll> Dijkstra(int from, int n, int x, int y, vector<vector<int>> &d)
 {
-    int h, w;
-    cin >> h >> w;
+    vector<ll> dist(n, INF);
+    priority_queue<pli, vector<pli>, greater<pli>> que;
 
-    vector<string> s(h);
+    dist[from] = 0;
+    que.push(make_pair(0, from));
 
-    for (int i = 0; i < h; i++) cin >> s[i];
+    while (que.size()) {
+        pli now = que.top();
+        que.pop();
 
-    int cnt = 0;
-    vector<int> dir_i = {0, 1, 1, 1, 0, -1, -1, -1};
-    vector<int> dir_j = {1, 1, 0, -1, -1, -1, 0, 1};
+        ll c = now.first;
+        int u = now.second;
 
-    for (int i = 0 ; i < h; i++) {
-        for (int j = 0; j < w; j++) {
-            queue<pii> que;
-            if (s[i][j] == '#') {
-                cnt++;
-                que.push(make_pair(i, j));
+        if (dist[u] < c) continue;
 
-                while (que.size()) {
-                    int ui = que.front().first;
-                    int uj = que.front().second;
-                    que.pop();
+        for (int i = 0; i < n; i++) {
+            if (i == u) continue;
 
-                    s[ui][uj] = '.';
-
-                    for (int k = 0; k < 8; k++) {
-                        int ni = ui + dir_i[k];
-                        int nj = uj + dir_j[k];
-
-                        if (s[ni][nj] == '#') {
-                            que.push(make_pair(ni, nj));
-                        }
-                    }
-                } 
+            ll nc = c + (ll)d[u][i] * x + y;
+            if (dist[i] > nc) {
+                dist[i] = nc;
+                que.push(make_pair(nc, i));
             }
         }
     }
+    
+    return dist;
+}
 
+
+int main()
+{
+    int n, a, b, c;
+    cin >> n >> a >> b >> c;
+    vector<vector<int>> d(n, vector<int>(n));
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cin >> d[i][j];
+        }
+    }
+
+    vector<ll> dist1 = Dijkstra(0, n, a, 0, d);   
+    vector<ll> distn = Dijkstra(n-1, n, b, c, d);   
+    
+    ll ans = dist1[0] + distn[0];
+
+    for (int i = 0; i < n; i++) {
+        ans = min(ans, dist1[i] + distn[i]);
+    }
+    
     cout << ans << endl;
 
     return 0;

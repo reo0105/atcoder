@@ -1,61 +1,45 @@
 #include <bits/stdc++.h>
 using namespace std;
 typedef pair<int, int> pi;
+typedef long long ll;
+#define MOD 998244353
 
 int main()
 {
     int n, m;
     cin >> n >> m;
-    vector<string> s(205);
 
-    for (int i = 0; i < n; i++) cin >> s.at(i);
+    vector<string> s(n);
+    for (int i = 0; i < n; i++) cin >> s[i];
 
-    vector<vector<vector<int>>> dist(205, vector<vector<int>>(205, vector<int>(4, -1)));
-
-    int ans = 0;
-
-    queue<pi> que;
-    que.push(make_pair(1, 1));
-
-    vector<int> dir_i = {1, 0, -1, 0};
-    vector<int> dir_j = {0, 1, 0, -1};
-
-    while (que.size()) {
-        int now_i = que.front().first;
-        int now_j = que.front().second;
-        que.pop();
-
-        for (int k = 0; k < 4; k++) {
-            int maxi = (k % 2) ? n : m;
-            for (int l = 1; l < maxi; l++) {
-                int ni = now_i + dir_i.at(k) * l;
-                int nj = now_j + dir_j.at(k) * l;
-
-                if (ni < 1 || nj < 1 || ni >= n || nj >= m) continue;
-                if (dist.at(ni).at(nj).at(k) != -1) continue;
-                if (s.at(ni).at(nj) == '#') {
-                    que.push(make_pair(ni, nj));
-                } else {
-                    dist.at(ni).at(nj).at(k) = 1;
-                }
-            }
-        }
-    }
-
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n-1; i++) {
         for (int j = 0; j < m; j++) {
-            if (s.at(i).at(j) == '.') {
-                for (int k = 0; k < 4; k++) {
-                    if (dist.at(i).at(j).at(k) != -1) {
-                        ans++;
-                        break;
-                    }
+            if (s[i][j] == '#') {
+                s[i+1][j] = '#';
+                if (j+1 < m) s[i+1][j+1] = '#';
+            }
+        }
+    }
+
+    vector<vector<ll>> dp(n+2, vector<ll>(m+1));
+
+    dp[0][m] = 1;
+    for (int j = m; j >= 0; j--) {
+        for (int i = 0; i < n+2; i++) {
+            if (i+1 < n+2) {
+                dp[i+1][j] += dp[i][j];
+                dp[i+1][j] %= MOD;
+            }
+            if (i-1 >= 0 && j-1 >= 0) {
+                if (i == 1 || s[i-2][j-1] == '.') {
+                    dp[i-1][j-1] += dp[i][j];
+                    dp[i-1][j-1] %= MOD;
                 }
             }
         }
     }
 
-    cout << ans << endl
+    cout << dp[n+1][0] << endl;
 
     return 0;
 }
